@@ -47,7 +47,7 @@ const AccordionDetails = styled(MuiAccordionDetails)(({ theme }) => ({
   borderTop: '1px solid rgba(0, 0, 0, .125)',
 }));
 
-export default function AccordionComponent({ lesson, idx }) {
+export default function AccordionComponent ({ lesson, idx }) {
   const [expanded, setExpanded] = React.useState('');
 
   const navigate = useNavigate();
@@ -68,12 +68,12 @@ export default function AccordionComponent({ lesson, idx }) {
         <AccordionSummary
           aria-controls={`panel${idx}d-content`}
           id={`panel${idx}d-header`}>
-          <Typography>{lesson.title}</Typography>
+          <Typography data-testid='lesson-title-el'>{lesson.title}</Typography>
         </AccordionSummary>
         <AccordionDetails>
-          <Typography>Description: {lesson.description};</Typography>
-          <Typography>Time: {lesson.time};</Typography>
-          <Typography>Place: {lesson.location}</Typography>
+          <Typography data-testid='lesson-description-el'>Description: {lesson.description}</Typography>
+          <Typography data-testid='lesson-time-el'>Time: {lesson.time}</Typography>
+          <Typography data-testid='lesson-location-el'>Place: {lesson.location}</Typography>
           <Button
             onClick={navigateToCard}
             variant='contained'
