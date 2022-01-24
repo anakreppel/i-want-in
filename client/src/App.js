@@ -6,7 +6,7 @@ import Container from '@mui/material/Container';
 import './App.css';
 
 import { AuthProvider } from './context/auth';
-
+import { useNavigate } from 'react-router';
 import NavBar from './NavBar';
 import Home from './Main/Home';
 import LogIn from './Main/LogIn';
@@ -18,15 +18,15 @@ import LessonCard from './Lessons/LessonCard';
 import ManageLesson from './Lessons/ManageLesson';
 
 function App() {
+  const navigate = useNavigate();
   return (
     <AuthProvider>
-      <Router>
         <CssBaseline />
         <Container maxWidth='sm'>
           <NavBar />
           <Routes>
             <Route extact path='/' element={<Home />} />
-            <Route extact path='/login' element={<LogIn />} />
+            <Route extact path='/login' element={<LogIn navigate={navigate}/>} />
             <Route extact path='/register' element={<Registration />} />
             <Route
               extact
@@ -44,7 +44,6 @@ function App() {
             <Route extact path='/manage/:lessonId' element={<ManageLesson />} />
           </Routes>
         </Container>
-      </Router>
     </AuthProvider>
   );
 }
