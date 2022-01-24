@@ -1,34 +1,34 @@
 import React, { useContext, useState, useEffect } from 'react';
-import { useNavigate } from 'react-router';
 
 import { Grid, Link, TextField, Button, Container } from '@mui/material';
-import { gql, useMutation } from '@apollo/client';
+import { useMutation } from '@apollo/client';
 
 import { AuthContext } from '../context/auth';
-import { useForm } from '../util/hooks';
 
-const LOGIN_USER = gql`
-  mutation login($username: String!, $password: String!) {
-    login(username: $username, password: $password) {
-      id
-      first_name
-      last_name
-      email
-      username
-      created_at
-      token
-    }
-  }
-`;
+import LOGIN_USER from '../graphql/login';
 
-export default function LogIn() {
+export function Hello() {
+ return (
+  <h1>Welcome</h1>
+ );
+}
+
+export default function LogIn ({navigate}) {
   const context = useContext(AuthContext);
-
+  const initialState = {
+    username: '',
+    password: '',
+  };
+  const [loginUser, {data, loading, error}] = useMutation(LOGIN_USER);
+  
+  const [formState, setFormState] = useState(initialState);
+  const handleChange = (e) => {
+    setFormState({ ...formState, [e.target.name]: e.target.value });
+  };
   // errors object to check valid user input
   const [errors, setErrors] = useState({});
 
   // hook for routing on submition of form
-  const navigate = useNavigate();
   const navidateToDashboard = () => {
     navigate(`/dashboard/${context.user.id}`, { replace: true });
   };
@@ -37,29 +37,31 @@ export default function LogIn() {
     context.user && navidateToDashboard();
   });
 
+  
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    loginUser({ variables: formState });
+    if (loading) return <div>"Submitting..."</div>;
+    if (error){
+      setErrors(
+        error.graphQLErrors[0] ? error.graphQLErrors[0].extensions.errors : {}
+      );
+    } else if (data) {
+    setFormState(initialState);
+    context.login(data.login);
+    navidateToDashboard();
+    }
+  };
+
+
   // gql mutation hook
-  const [loginUser, { loading }] = useMutation(LOGIN_USER, {
-    // we deconstruct the "result" object to get "login" from the "data" property, and pass an alias ("userData") to it for better readibility
-    update(_, { data: { login: userData } }) {
-      context.login(userData);
-      console.log(userData);
-      navidateToDashboard();
-    },
-    onError(err) {
-      // set the errors from gql to the errors object
-      if (err) {
-        setErrors(
-          err.graphQLErrors[0] ? err.graphQLErrors[0].extensions.errors : {}
-        );
-      }
-    },
-  });
 
   // extract state, onChange and onSubmit from useForm hook
-  const { handleChange, handleSubmit, formState } = useForm(loginUser, {
-    username: '',
-    password: '',
-  });
+  // const { handleChange, handleSubmit, formState } = useForm(loginUser, {
+  //   username: '',
+  //   password: '',
+  // });
 
   // array of input fields used to generate TextFields modularly
   const inputFields = [

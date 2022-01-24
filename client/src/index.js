@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
-
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 // importing what we need to connect our React app to our GraphQl server.
 import {
   ApolloClient,
@@ -35,9 +35,12 @@ const client = new ApolloClient({
 
 ReactDOM.render(
   <React.StrictMode>
-    <ApolloProvider client={client}>
+   <ApolloProvider client={client}>
+    <Router>
       <App />
+      </Router>
     </ApolloProvider>
   </React.StrictMode>,
   document.getElementById('root')
 );
+
